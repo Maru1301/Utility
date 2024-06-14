@@ -2,6 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
+	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	<PackageId>Utility</PackageId>
+	<Version>1.0.0</Version>
+	<Authors>Maru1301</Authors>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -9,5 +14,7 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
   </ItemGroup>
-
+  <ItemGroup>
+	  <None Include="docs\README.md" Pack="true" PackagePath="\"/>
+  </ItemGroup>
 </Project>
