@@ -14,16 +14,13 @@ namespace Utility
         public static string ToSHA256(string plainText, string salt = "")
         {
             // ref https://docs.microsoft.com/zh-tw/dotnet/api/system.security.cryptography.sha256?view=net-6.0
-            using (SHA256 SHA256 = SHA256.Create())
-            {
                 string combinedString = salt + plainText;
 
-                // Use a single byte array for both data and result
                 byte[] combinedBytes = Encoding.UTF8.GetBytes(combinedString);
-                byte[] hashBytes = SHA256.ComputeHash(combinedBytes);
+            byte[] hashBytes = SHA256.HashData(combinedBytes);
 
                 // Convert directly from byte array to hex string with a StringBuilder
-                StringBuilder sb = new StringBuilder(hashBytes.Length * 2);
+            var sb = new StringBuilder(hashBytes.Length * 2);
                 foreach (byte b in hashBytes)
                 {
                     sb.Append(b.ToString("X2"));
@@ -31,20 +28,16 @@ namespace Utility
 
                 return sb.ToString();
             }
-        }
 
         public static string GenerateSalt(int length = 16)
         {
-            // Validate length (optional)
             if (length <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(length), "Salt length must be positive.");
             }
 
-            // Create a byte array to hold the salt
             byte[] saltBytes = new byte[length];
 
-            // Use RandomNumberGenerator to generate cryptographically secure random bytes
             using (var rng = RandomNumberGenerator.Create())
             {
                 rng.GetBytes(saltBytes);
