@@ -1,5 +1,4 @@
 ﻿using Utility;
-using Xunit;
 
 namespace InfrastructureTests;
 
