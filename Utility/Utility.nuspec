@@ -2,7 +2,7 @@
 <package >
   <metadata>
     <id>Utility</id>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <authors>Maru1301</authors>
 	<readme>docs\README.md</readme>
     <description>Infra</description>
