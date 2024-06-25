@@ -3,6 +3,11 @@ using System.Text;
 
 namespace Utility;
 
+/// <summary>
+/// The HashUtility class provides essential cryptographic functions for secure data handling, including SHA256 hashing, salt generation, AES encryption and decryption, and hexadecimal string conversion.
+/// 
+/// This utility class is designed to offer robust tools for secure hashing, encryption, and decryption, making it suitable for a wide range of cryptographic needs in .NET applications.
+/// </summary>
 public static class HashUtility
 {
     /// <summary>
