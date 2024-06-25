@@ -71,4 +71,76 @@ public static class HashUtility
         // Convert bytes to a base-64 encoded string for easier storage and use
         return Convert.ToBase64String(saltBytes);
     }
+
+    /// <summary>
+    /// Encrypts a plain text using AES encryption.
+    /// </summary>
+    /// <param name="plainText">The plain text to encrypt.</param>
+    /// <param name="encryptionKey">The encryption key (32 bytes).</param>
+    /// <returns>The encrypted text in base-64 format.</returns>
+    public static string AesEncrypt(string plainText, string encryptionKey)
+    {
+        byte[] encrypted;
+
+        using (Aes aes = Aes.Create())
+        {
+            aes.Key = Encoding.UTF8.GetBytes(encryptionKey);
+            aes.IV = new byte[16];
+
+            ICryptoTransform encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
+
+            using MemoryStream msEncrypt = new();
+            using (CryptoStream csEncrypt = new(msEncrypt, encryptor, CryptoStreamMode.Write))
+            using (StreamWriter swEncrypt = new(csEncrypt))
+            {
+                swEncrypt.Write(plainText);
+            }
+            encrypted = msEncrypt.ToArray();
+        }
+
+        return Convert.ToBase64String(encrypted);
+    }
+
+    /// <summary>
+    /// Decrypts an AES encrypted text.
+    /// </summary>
+    /// <param name="cipherText">The encrypted text in base-64 format.</param>
+    /// <param name="encryptionKey">The encryption key (32 bytes).</param>
+    /// <returns>The decrypted plain text.</returns>
+    public static string AesDecrypt(string cipherText, string encryptionKey)
+    {
+        string plaintext;
+        byte[] cipherBytes = Convert.FromBase64String(cipherText);
+
+        using (Aes aes = Aes.Create())
+        {
+            aes.Key = Encoding.UTF8.GetBytes(encryptionKey);
+            aes.IV = new byte[16];
+
+            ICryptoTransform decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
+
+            using MemoryStream msDecrypt = new(cipherBytes);
+            using CryptoStream csDecrypt = new(msDecrypt, decryptor, CryptoStreamMode.Read);
+            using StreamReader srDecrypt = new(csDecrypt);
+            plaintext = srDecrypt.ReadToEnd();
+        }
+
+        return plaintext;
+    }
+
+    /// <summary>
+    /// Converts a hexadecimal string to a byte array.
+    /// </summary>
+    /// <param name="hexString">The hexadecimal string to convert.</param>
+    /// <returns>The byte array representation of the hexadecimal string.</returns>
+    public static byte[] HexStringToByteArray(string hexString)
+    {
+        hexString = hexString.Replace(" ", "");
+        byte[] buffer = new byte[hexString.Length / 2];
+        for (int i = 0; i < hexString.Length; i += 2)
+        {
+            buffer[i / 2] = Convert.ToByte(hexString.Substring(i, 2), 16);
+        }
+        return buffer;
+    }
 }
