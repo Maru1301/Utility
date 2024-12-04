@@ -30,6 +30,6 @@ jobs:
       run: dotnet pack --configuration Release --no-build --output ./output
 
     - name: Publish to GitHub Packages
-      run: dotnet nuget push ./output/*.nupkg --api-key ${{ secrets.GH_PACKAGES_TOKEN }} --source "github"
+      run: dotnet nuget push ./output/*.nupkg --api-key ${{ secrets.GH_PACKAGES_TOKEN }} --source "https://nuget.pkg.github.com/Maru1301/index.json"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
