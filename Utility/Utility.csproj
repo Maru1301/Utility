@@ -4,12 +4,13 @@
     <TargetFramework>net8.0</TargetFramework>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<PackageId>Utility</PackageId>
-	<Version>1.0.4</Version>
+	<Version>1.0.5</Version>
 	<Authors>Maru1301</Authors>
 	<PackageReadmeFile>README.md</PackageReadmeFile>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
+        <RepositoryUrl>https://github.com/Maru1301/Utility</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
