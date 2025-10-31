@@ -1,8 +1,12 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Logging.Abstractions;
 using System.Reflection;
 
 namespace Utility;
 
+/// <summary>
+/// Utility class for simple object-to-object mapping using reflection.
+/// </summary>
 public static class MapperUtility
 {
     /// <summary>
@@ -17,16 +21,28 @@ public static class MapperUtility
         var config = new MapperConfiguration(cfg =>
         {
             cfg.CreateMap(source.GetType(), typeof(TResult));
-        });
+        }, NullLoggerFactory.Instance);
         IMapper mapper = config.CreateMapper();
         return mapper.Map<TResult>(source);
     }
 
+    /// <summary>
+    /// Wraps a single value into an enumerable.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="_"></param>
+    /// <returns></returns>
     public static IEnumerable<T> Linq<T>(this T _)
     {
         return new List<T> { _ };
     }
 
+    /// <summary>
+    /// Maps properties from source to a new instance of TResult by matching property names and types.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="source"></param>
+    /// <returns></returns>
     public static TResult Mapping<TResult>(this object source) where TResult : class, new()
     {
         TResult result = new TResult();
@@ -45,6 +61,13 @@ public static class MapperUtility
         return result;
     }
 
+    /// <summary>
+    /// Maps with exception handlings (explicit values for specified property names).
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="exceptionHandlings"></param>
+    /// <returns></returns>
     public static TResult Mapping<TResult>(this object source, Dictionary<string, object> exceptionHandlings) where TResult : class, new()
     {
         Dictionary<string, object> exceptionHandlings2 = exceptionHandlings;
@@ -74,6 +97,14 @@ public static class MapperUtility
         return result;
     }
 
+    /// <summary>
+    /// Generic mapping with dictionary of name -> func for exceptions.
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="exceptionHandlings"></param>
+    /// <returns></returns>
     public static TResult Mapping<TSource, TResult>(this TSource source, Dictionary<string, Func<TSource, object>> exceptionHandlings) where TResult : class, new()
     {
         Dictionary<string, Func<TSource, object>> exceptionHandlings2 = exceptionHandlings;
@@ -103,6 +134,13 @@ public static class MapperUtility
         return result;
     }
 
+    /// <summary>
+    /// Mapping with params of explicit property values.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="exceptionHandlings"></param>
+    /// <returns></returns>
     public static TResult Mapping<TResult>(this object source, params (string Key, object Value)[] exceptionHandlings) where TResult : class, new()
     {
         (string Key, object Value)[] exceptionHandlings2 = exceptionHandlings;
@@ -132,6 +170,14 @@ public static class MapperUtility
         return result;
     }
 
+    /// <summary>
+    /// Mapping with params of name -> func for exceptions.
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="source"></param>
+    /// <param name="exceptionHandlings"></param>
+    /// <returns></returns>
     public static TResult Mapping<TSource, TResult>(this TSource source, params (string Key, Func<TSource, object> Value)[] exceptionHandlings) where TResult : class, new()
     {
         (string Key, Func<TSource, object> Value)[] exceptionHandlings2 = exceptionHandlings;
@@ -161,9 +207,15 @@ public static class MapperUtility
         return result;
     }
 
+    /// <summary>
+    /// Maps a sequence of objects to TResult instances.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="sources"></param>
+    /// <returns></returns>
     public static IEnumerable<TResult> Mappings<TResult>(this IEnumerable<object> sources) where TResult : class, new()
     {
-        if (sources != null && sources.Count() == 0)
+        if (sources == null || !sources.Any())
         {
             yield break;
         }
@@ -188,6 +240,14 @@ public static class MapperUtility
             yield return result;
         }
     }
+
+    /// <summary>
+    /// Maps a sequence with explicit exception-handling values.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="sources"></param>
+    /// <param name="exceptionHandlings"></param>
+    /// <returns></returns>
 
     public static IEnumerable<TResult> Mappings<TResult>(this IEnumerable<object> sources, Dictionary<string, object> exceptionHandlings) where TResult : class, new()
     {
@@ -221,6 +281,13 @@ public static class MapperUtility
         }
     }
 
+    /// <summary>
+    /// Maps a sequence with params exception values.
+    /// </summary>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="sources"></param>
+    /// <param name="exceptionHandlings"></param>
+    /// <returns></returns>
     public static IEnumerable<TResult> Mappings<TResult>(this IEnumerable<object> sources, params (string Key, object Value)[] exceptionHandlings) where TResult : class, new()
     {
         (string Key, object Value)[] exceptionHandlings2 = exceptionHandlings;
@@ -253,6 +320,14 @@ public static class MapperUtility
         }
     }
 
+    /// <summary>
+    /// Maps a generic sequence with name->func exception handlers.
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="sources"></param>
+    /// <param name="exceptionHandlings"></param>
+    /// <returns></returns>
     public static IEnumerable<TResult> Mappings<TSource, TResult>(this IEnumerable<TSource> sources, params (string Key, Func<TSource, object> Value)[] exceptionHandlings) where TResult : class, new()
     {
         (string Key, Func<TSource, object> Value)[] exceptionHandlings2 = exceptionHandlings;
@@ -285,6 +360,14 @@ public static class MapperUtility
         }
     }
 
+    /// <summary>
+    /// Maps a generic sequence with dictionary of name->func exception handlers.
+    /// </summary>
+    /// <typeparam name="TSource"></typeparam>
+    /// <typeparam name="TResult"></typeparam>
+    /// <param name="sources"></param>
+    /// <param name="exceptionHandlings"></param>
+    /// <returns></returns>
     public static IEnumerable<TResult> Mappings<TSource, TResult>(this IEnumerable<TSource> sources, Dictionary<string, Func<TSource, object>> exceptionHandlings) where TResult : class, new()
     {
         Dictionary<string, Func<TSource, object>> exceptionHandlings2 = exceptionHandlings;
@@ -317,7 +400,11 @@ public static class MapperUtility
         }
     }
 
-    private static void Mapping<T>(object source, (PropertyInfo r, PropertyInfo s) p, ref T result)
+    /// <summary>
+    /// Internal helper to map a single property pair from source to result.
+    /// Accepts nullable source and performs safe conversions.
+    /// </summary>
+    private static void Mapping<T>(object? source, (PropertyInfo r, PropertyInfo s) p, ref T result)
     {
         if (p.r.PropertyType == p.s.PropertyType)
         {
@@ -325,28 +412,28 @@ public static class MapperUtility
         }
         else if (p.r.PropertyType.IsEnum && p.s.PropertyType == typeof(int))
         {
-            if (Enum.TryParse(p.r.PropertyType, p.s.GetValue(source)?.ToString(), out object result2))
+            if (Enum.TryParse(p.r.PropertyType, p.s.GetValue(source)?.ToString(), out object? result2))
             {
                 p.r.SetValue(result, result2);
             }
         }
         else if (p.r.PropertyType.IsEnum && p.s.PropertyType == typeof(byte))
         {
-            if (Enum.TryParse(p.r.PropertyType, p.s.GetValue(source)?.ToString(), out object result3))
+            if (Enum.TryParse(p.r.PropertyType, p.s.GetValue(source)?.ToString(), out object? result3))
             {
                 p.r.SetValue(result, result3);
             }
         }
         else if (p.r.PropertyType.IsEnum && p.s.PropertyType == typeof(short))
         {
-            if (Enum.TryParse(p.r.PropertyType, p.s.GetValue(source)?.ToString(), out object result4))
+            if (Enum.TryParse(p.r.PropertyType, p.s.GetValue(source)?.ToString(), out object? result4))
             {
                 p.r.SetValue(result, result4);
             }
         }
         else if (p.r.PropertyType == typeof(int) && p.s.PropertyType.IsEnum)
         {
-            p.r.SetValue(result, (int)p.s.GetValue(source));
+            p.r.SetValue(result, (int?)p.s.GetValue(source));
         }
         else if (Nullable.GetUnderlyingType(p.r.PropertyType) == p.s.PropertyType)
         {
